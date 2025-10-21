@@ -45,7 +45,7 @@ const ShopClient = ({ products }) => {
   const sortedProducts = sortProducts();
 
   return (
-    <div className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 pt-12 sm:w-[90%] md:w-[95%] lg:w-[80%] xl:w-[80%] mx-auto">
+    <div className="min-h-screen  px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 pt-12 sm:w-[90%] md:w-[95%] lg:w-[80%] xl:w-[80%] mx-auto">
       <div className="mb-7 text-center">
         <h1 className="text-4xl md:text-5xl font-light mb-4 text-neutral-900">
           Perfume Collection

@@ -20,7 +20,7 @@ const Shop = async () => {
   const products = await getProducts();
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="bg-gradient-to-br from-gray via-gray-200 to-pink-200/60">
       <Header />
       <ShopClient products={products} />
       <Footer />

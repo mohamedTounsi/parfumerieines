@@ -17,42 +17,6 @@ const ProductView = ({ product }) => {
 
   const decrementQuantity = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
-  const handleBuyNow = async () => {
-    if (parseInt(product.quantity) === 0) {
-      toast.error("Product is sold out.");
-      return;
-    }
-
-    const toastId = toast.loading("Processing...");
-
-    try {
-      const res = await fetch("/api/products/decrement", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product._id, quantity }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || "Failed to update stock");
-
-      toast.success("Product purchased!", { id: toastId });
-      sessionStorage.setItem(
-        "checkoutSingleProduct",
-        JSON.stringify({
-          _id: product._id,
-          title: product.title,
-          image: product.frontImg,
-          price: product.price,
-          quantity,
-        })
-      );
-      router.push("/checkout");
-    } catch (error) {
-      toast.error(error.message, { id: toastId });
-    }
-  };
-
   const handleAddToCart = () => {
     if (parseInt(product.quantity) === 0) {
       toast.error("Product is sold out.");
@@ -66,6 +30,26 @@ const ProductView = ({ product }) => {
       quantity,
     });
     toast.success("Added to cart!");
+  };
+
+  const handleBuyNow = () => {
+    if (parseInt(product.quantity) === 0) {
+      toast.error("Product is sold out.");
+      return;
+    }
+
+    // Save single product to session for checkout
+    sessionStorage.setItem(
+      "checkoutSingleProduct",
+      JSON.stringify({
+        _id: product._id,
+        title: product.title,
+        image: product.frontImg,
+        price: product.price,
+        quantity,
+      })
+    );
+    router.push("/checkout");
   };
 
   const isSoldOut = parseInt(product.quantity) === 0;
@@ -131,7 +115,7 @@ const ProductView = ({ product }) => {
 
             {/* Quantity */}
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-zinc-800  mb-2">
+              <h3 className="text-sm font-medium text-zinc-800 mb-2">
                 Quantity
               </h3>
               <div className="flex items-center border border-gray-300 rounded-md w-fit">
