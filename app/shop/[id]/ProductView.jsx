@@ -5,78 +5,70 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const ProductView = ({ product }) => {
-  const { addToCart, clearCart } = useCart();
+  const { addToCart } = useCart();
   const router = useRouter();
   const [activeImage, setActiveImage] = useState("front");
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
+
   const incrementQuantity = () => {
-    const max = getAvailableStock();
-    if (quantity < max) {
-      setQuantity((q) => q + 1);
-    } else {
-      toast.error(
-        `Only ${max} item${
-          max > 1 ? "s" : ""
-        } left in stock for size ${selectedSize}.`
-      );
-    }
+    if (quantity < parseInt(product.quantity)) setQuantity((q) => q + 1);
+    else toast.error(`Only ${product.quantity} left in stock.`);
   };
 
   const decrementQuantity = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
-  const getAvailableStock = () => {
-    switch (selectedSize) {
-      case "XS":
-        return parseInt(product.xsmallQuantity);
-      case "S":
-        return parseInt(product.smallQuantity);
-      case "M":
-        return parseInt(product.mediumQuantity);
-      case "L":
-        return parseInt(product.largeQuantity);
-      case "XL":
-        return parseInt(product.xlargeQuantity);
-      case "XXL":
-        return parseInt(product.xxlargeQuantity);
-      default:
-        return 0;
-    }
-  };
 
-  const handleBuyNow = () => {
-    if (!selectedSize) {
-      toast.error("Please select a size to proceed.");
+  const handleBuyNow = async () => {
+    if (parseInt(product.quantity) === 0) {
+      toast.error("Product is sold out.");
       return;
     }
 
-    // Clear any existing cart items
+    const toastId = toast.loading("Processing...");
 
-    const productToBuy = {
+    try {
+      const res = await fetch("/api/products/decrement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: product._id, quantity }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Failed to update stock");
+
+      toast.success("Product purchased!", { id: toastId });
+      sessionStorage.setItem(
+        "checkoutSingleProduct",
+        JSON.stringify({
+          _id: product._id,
+          title: product.title,
+          image: product.frontImg,
+          price: product.price,
+          quantity,
+        })
+      );
+      router.push("/checkout");
+    } catch (error) {
+      toast.error(error.message, { id: toastId });
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (parseInt(product.quantity) === 0) {
+      toast.error("Product is sold out.");
+      return;
+    }
+    addToCart({
       _id: product._id,
       title: product.title,
       image: product.frontImg,
       price: product.price,
-      size: selectedSize,
-      color: selectedColor,
-      quantity: quantity,
-    };
-
-    // Store only this single product
-    sessionStorage.setItem(
-      "checkoutSingleProduct",
-      JSON.stringify(productToBuy)
-    );
-    router.push("/checkout");
+      quantity,
+    });
+    toast.success("Added to cart!");
   };
 
-  const isSoldOut =
-    product.xsmallQuantity === "0" &&
-    product.smallQuantity === "0" &&
-    product.mediumQuantity === "0" &&
-    product.largeQuantity === "0" &&
-    product.xlargeQuantity === "0" &&
-    product.xxlargeQuantity === "0";
+  const isSoldOut = parseInt(product.quantity) === 0;
 
   return (
     <div className="bg-white">
@@ -133,90 +125,35 @@ const ProductView = ({ product }) => {
               {product.title}
             </h1>
             <p className="text-2xl text-gray-900 mb-6 underline">
-              {product.price}
+              {product.price} DT
             </p>
-
             <p className="text-gray-700 mb-6">{product.description}</p>
-
-            {/* Colors */}
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">
-                Colors Used{" "}
-              </h3>
-              <div className="flex gap-2">
-                {product.colors[0].split(",").map((color, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedColor(color)}
-                    className="w-8 h-8 rounded-full"
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Sizes */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="text-sm font-medium text-gray-900">Size</h3>
-                <button className="text-xs underline text-gray-500">
-                  Size guide
-                </button>
-              </div>
-              <ul className="flex gap-4 flex-wrap">
-                {[
-                  { label: "XS", quantity: product.xsmallQuantity },
-                  { label: "S", quantity: product.smallQuantity },
-                  { label: "M", quantity: product.mediumQuantity },
-                  { label: "L", quantity: product.largeQuantity },
-                  { label: "XL", quantity: product.xlargeQuantity },
-                  { label: "XXL", quantity: product.xxlargeQuantity },
-                ].map(({ label, quantity }) => {
-                  const isDisabled = quantity === "0";
-                  return (
-                    <li key={label}>
-                      <button
-                        type="button"
-                        onClick={() => !isDisabled && setSelectedSize(label)}
-                        disabled={isDisabled}
-                        className={`px-5 py-1 cursor-pointer text-lg font-light border rounded-xl transition ${
-                          isDisabled
-                            ? "bg-gray-200 border-none line-through cursor-not-allowed"
-                            : selectedSize === label
-                            ? "bg-neutral-900 text-white border-neutral-900"
-                            : "bg-transparent text-neutral-900 border-neutral-900 hover:bg-neutral-100"
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
 
             {/* Quantity */}
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">
+              <h3 className="text-sm font-medium text-zinc-800  mb-2">
                 Quantity
               </h3>
               <div className="flex items-center border border-gray-300 rounded-md w-fit">
                 <button
                   onClick={decrementQuantity}
-                  className="px-3 py-2 text-lg font-light cursor-pointer"
+                  className="px-3 py-2 text-lg font-light text-zinc-800 cursor-pointer"
                 >
                   -
                 </button>
-                <span className="px-4 py-2 border-x border-gray-300">
+                <span className="px-4 py-2 border-x text-zinc-800 border-gray-300">
                   {quantity}
                 </span>
                 <button
                   onClick={incrementQuantity}
-                  className="px-3 py-2 text-lg font-light cursor-pointer "
+                  className="px-3 py-2 text-lg text-zinc-800 font-light cursor-pointer"
                 >
                   +
                 </button>
               </div>
+              <p className="mt-2 text-sm text-gray-500">
+                {product.quantity} left in stock
+              </p>
             </div>
 
             {/* Actions */}
@@ -235,24 +172,8 @@ const ProductView = ({ product }) => {
                 >
                   Buy Now
                 </button>
-
                 <button
-                  onClick={() => {
-                    if (!selectedSize) {
-                      toast.error("Please select a size to add to cart.");
-                      return;
-                    }
-                    addToCart({
-                      _id: product._id,
-                      title: product.title,
-                      image: product.frontImg,
-                      price: product.price,
-                      size: selectedSize,
-                      color: selectedColor,
-                      quantity,
-                    });
-                    toast.success("Added to cart!");
-                  }}
+                  onClick={handleAddToCart}
                   className="w-full cursor-pointer py-4 px-6 rounded-md bg-neutral-900 text-white hover:bg-white hover:text-neutral-900 border border-neutral-900 transition-all duration-180 ease-in-out"
                 >
                   Add to Cart
@@ -262,14 +183,8 @@ const ProductView = ({ product }) => {
 
             {/* Details */}
             <div className="border-t border-gray-200 pt-6 mt-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">
-                Details
-              </h3>
-              <p className="text-sm text-gray-700 mb-2">
-                <strong>Composition:</strong> {product.composition}
-              </p>
-              <p className="text-sm text-gray-700">
-                <strong>Care instructions:</strong> {product.care}
+              <p className="text-sm text-gray-700 mt-2">
+                <strong>Volume:</strong> {product.ml} ml
               </p>
             </div>
           </div>

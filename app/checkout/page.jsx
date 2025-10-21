@@ -45,20 +45,36 @@ const CheckoutPage = () => {
       })),
     };
 
-    const res = await fetch("/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(orderData),
-    });
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
 
-    if (res.ok) {
+      if (!res.ok) throw new Error("Failed to place order");
+
       toast.success("Order placed successfully!");
 
-      // 🔥 Clear everything after order
+      // 🔥 Decrement product quantities
+      for (const item of items) {
+        await fetch("/api/products/decrement", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: item._id,
+            quantity: item.quantity,
+          }),
+        });
+      }
+
+      // 🔥 Clear cart and session
       clearCart();
-      setItems([]); // Clear `items` state
+      setItems([]);
       localStorage.removeItem("cart");
       sessionStorage.removeItem("checkoutCart");
       sessionStorage.removeItem("checkoutSingleProduct");
@@ -66,8 +82,9 @@ const CheckoutPage = () => {
       setTimeout(() => {
         window.location.href = "/thank-you";
       }, 500);
-    } else {
-      toast.error("Failed to place order");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Something went wrong");
     }
   };
 
@@ -97,10 +114,10 @@ const CheckoutPage = () => {
   }, [items]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-blue-50">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-white to-blue-50 text-zinc-800 ">
       <Header />
 
-      <main className="flex-grow px-4 py-10 md:px-16">
+      <main className="flex-grow px-4 py-10 md:px-16 text-zinc-800">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Shipping Form */}
           <div className="md:col-span-2 bg-white p-8 rounded-2xl shadow-lg">

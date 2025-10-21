@@ -72,7 +72,7 @@ const Page = () => {
           <h1 className="text-3xl md:text-4xl lg:text-6xl font-light text-neutral-900">
             Products
           </h1>
-          <Link href="/dashbord/products/create">
+          <Link href="/dashboard/products/create">
             <button className="bg-neutral-900 text-white px-6 py-2 rounded-md flex items-center justify-center gap-2">
               <Plus />
               <span className="hidden md:inline">Add Product</span>
@@ -89,7 +89,7 @@ const Page = () => {
             <div
               key={product._id}
               onClick={() =>
-                router.push(`/dashbord/products/edit/${product._id}`)
+                router.push(`/dashboard/products/edit/${product._id}`)
               }
               className="flex flex-col items-center justify-center bg-white shadow-lg hover:shadow-xl rounded-md p-6 relative transition-all duration-300"
             >

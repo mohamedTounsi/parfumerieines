@@ -29,7 +29,7 @@ const CartPage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen text-zinc-800">
       <Header />
 
       <main className="flex-grow">
@@ -44,7 +44,7 @@ const CartPage = () => {
           </div>
         ) : (
           <div className="p-2 md:p-12 w-full md:w-[65%] mx-auto">
-            <h1 className="text-3xl font-light mb-8 border-b pb-4">
+            <h1 className="text-3xl font-light  mb-8 border-b pb-4">
               Your Cart
             </h1>
             <ul className="space-y-6">

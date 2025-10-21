@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import { GiDelicatePerfume } from "react-icons/gi";
 
 const Leftsidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +22,7 @@ const Leftsidebar = () => {
       <div className="flex flex-col items-center justify-center py-4">
         <Link href="/">
           <Image
-            src="/bnblogo.png"
+            src="/logoines2.png"
             alt=""
             width={125}
             height={125}
@@ -39,34 +40,22 @@ const Leftsidebar = () => {
 
         {/* Navigation Items */}
         <ul
-          className={`text-white flex flex-col gap-6 pb-5 transition-all duration-300 ease-in-out ${
+          className={`text-white flex flex-col gap-6 pb-5 md:mt-5 transition-all duration-300 ease-in-out ${
             isOpen ? "block" : "hidden"
           } lg:flex`}
         >
-          <Link href="/dashbord/heroImage" onClick={() => setIsOpen(false)}>
-            <li className="flex flex-col lg:flex-row items-center gap-2 hover:bg-white hover:text-black transition-all duration-300 ease-in-out px-2 py-2 rounded-md">
-              <Images /> Hero Image
-            </li>
-          </Link>
-          <Link href="/dashbord/shopNowImage" onClick={() => setIsOpen(false)}>
+          <Link href="/dashboard/shopNowImage" onClick={() => setIsOpen(false)}>
             <li className="flex flex-col lg:flex-row items-center gap-2 hover:bg-white hover:text-black transition-all duration-300 ease-in-out px-2 py-2 rounded-md">
               <Store /> Shop Now Image
             </li>
           </Link>
-          <Link
-            href="/dashbord/recentCapsuleImages"
-            onClick={() => setIsOpen(false)}
-          >
+
+          <Link href="/dashboard/products" onClick={() => setIsOpen(false)}>
             <li className="flex flex-col lg:flex-row items-center gap-2 hover:bg-white hover:text-black transition-all duration-300 ease-in-out px-2 py-2 rounded-md">
-              <PillBottle /> RECENT-capsule images
+              <GiDelicatePerfume /> Products
             </li>
           </Link>
-          <Link href="/dashbord/products" onClick={() => setIsOpen(false)}>
-            <li className="flex flex-col lg:flex-row items-center gap-2 hover:bg-white hover:text-black transition-all duration-300 ease-in-out px-2 py-2 rounded-md">
-              <Shirt /> Products
-            </li>
-          </Link>
-          <Link href="/dashbord/orders" onClick={() => setIsOpen(false)}>
+          <Link href="/dashboard/orders" onClick={() => setIsOpen(false)}>
             <li className="flex flex-col lg:flex-row items-center gap-2 hover:bg-white hover:text-black transition-all duration-300 ease-in-out px-2 py-2 rounded-md">
               <ListOrdered /> orders
             </li>

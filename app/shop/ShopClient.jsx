@@ -19,23 +19,19 @@ const ShopClient = ({ products }) => {
           return [...products].sort((a, b) => b.title.localeCompare(a.title));
         case "price-asc":
           return [...products].sort(
-            (a, b) =>
-              parseFloat(a.price.replace(" DT", "").replace(",", ".")) -
-              parseFloat(b.price.replace(" DT", "").replace(",", "."))
+            (a, b) => parseFloat(a.price) - parseFloat(b.price)
           );
         case "price-desc":
           return [...products].sort(
-            (a, b) =>
-              parseFloat(b.price.replace(" DT", "").replace(",", ".")) -
-              parseFloat(a.price.replace(" DT", "").replace(",", "."))
+            (a, b) => parseFloat(b.price) - parseFloat(a.price)
           );
         case "date-asc":
           return [...products].sort(
-            (a, b) => new Date(a.date) - new Date(b.date)
+            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
           );
         case "date-desc":
           return [...products].sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
           );
         default:
           return [...products];
@@ -52,11 +48,11 @@ const ShopClient = ({ products }) => {
     <div className="min-h-screen px-4 sm:px-6 md:px-8 lg:px-12 xl:px-24 pt-12 sm:w-[90%] md:w-[95%] lg:w-[80%] xl:w-[80%] mx-auto">
       <div className="mb-7 text-center">
         <h1 className="text-4xl md:text-5xl font-light mb-4 text-neutral-900">
-          Hannibal Collection
+          Perfume Collection
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Premium quality hoodies with unique designs. Each piece is crafted for
-          comfort and style.
+          Explore our premium selection of perfumes. Crafted for elegance and
+          lasting fragrance.
         </p>
       </div>
 
@@ -87,17 +83,6 @@ const ShopClient = ({ products }) => {
               onMouseEnter={() => setHoveredProduct(index)}
               onMouseLeave={() => setHoveredProduct(null)}
             >
-              {/* Swatches */}
-              <div className="absolute top-4 left-4 z-10 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {product.colors[0].split(",").map((color, i) => (
-                  <div
-                    key={i}
-                    className="w-4 h-4 rounded-full border border-white shadow-md"
-                    style={{ backgroundColor: color }}
-                  />
-                ))}
-              </div>
-
               {/* Images */}
               <div className="relative w-full aspect-square overflow-hidden">
                 <Image
@@ -115,14 +100,9 @@ const ShopClient = ({ products }) => {
                   style={{ opacity: hoveredProduct === index ? 1 : 0 }}
                 />
 
-                {(product.soldOut ||
-                  (product.xsmallQuantity === "0" &&
-                    product.smallQuantity === "0" &&
-                    product.mediumQuantity === "0" &&
-                    product.largeQuantity === "0" &&
-                    product.xlargeQuantity === "0" &&
-                    product.xxlargeQuantity === "0")) && (
-                  <p className="absolute bottom-2 bg-gray-800 left-2 text-white px-1.5 py-0.5 md:px-2 md:py-1 rounded-2xl text-xs md:text-sm font-light">
+                {/* Sold Out Badge */}
+                {product.quantity === "0" && (
+                  <p className="absolute bottom-2 bg-gray-800 left-2 text-white px-2 py-1 rounded-2xl text-sm font-light">
                     Sold Out
                   </p>
                 )}
@@ -133,9 +113,10 @@ const ShopClient = ({ products }) => {
                 <h2 className="text-sm md:text-base font-bold mb-1 text-gray-800 line-clamp-2">
                   {product.title}
                 </h2>
+                <p className="text-gray-600 text-sm mb-1">{product.ml} ml</p>
                 <div className="mt-auto flex justify-between items-center">
                   <p className="text-sm md:text-base font-semibold text-gray-700">
-                    {product.price}
+                    {product.price} DT
                   </p>
                   <ShoppingCart size={16} className="text-gray-600" />
                 </div>

@@ -45,17 +45,17 @@ const Header = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center py-4 px-8 lg:px-16 border-b border-gray-200">
+      <div className="flex w-[80%] mx-auto justify-between items-center py-4 px-8 lg:px-16 border-b border-gray-200">
         <Menu
-          className="cursor-pointer md:hidden"
+          className="cursor-pointer md:hidden text-black"
           onClick={() => setIsOpen(true)}
         />
         <Link href="/" prefetch>
           <Image
-            src="/beygif.webp"
+            src="/logoines2.png"
             alt="Logo"
-            width={125}
-            height={125}
+            width={90}
+            height={90}
             priority
           />
         </Link>
@@ -157,18 +157,18 @@ const Header = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed top-0 left-0 w-full h-full bg-white z-50 transition-transform duration-300 ${
+        className={`fixed text-black top-0 left-0 w-full h-full bg-white z-50 transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex justify-between items-center p-6">
+        <div className="flex  justify-between items-center p-6">
           <X
             className="cursor-pointer"
             size={32}
             onClick={() => setIsOpen(false)}
           />
           <Image
-            src="/beygif.webp"
+            src="/logoines2.png"
             alt="Logo"
             width={100}
             height={100}

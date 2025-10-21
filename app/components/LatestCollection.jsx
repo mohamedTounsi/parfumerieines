@@ -23,29 +23,51 @@ const LatestCollection = () => {
   }, []);
 
   return (
-    <div>
-      <h1 className="text-center text-zinc-800 md:text-4xl font-light md:mt-10 md:mb-10 text-2xl mt-3.5 mb-3.5">
-        Our Latest Collection
-      </h1>
-
-      <div className="w-full md:h-[85vh] h-[24vh] relative flex items-center justify-center bg-center brightness-75 overflow-hidden">
+    <div className="w-full">
+      <div className="relative w-full md:h-[90vh] h-[35vh] flex items-center justify-center overflow-hidden group">
+        {/* Background Image with Overlay */}
         {shopNowImage && (
-          <Image
-            src={shopNowImage}
-            alt="Latest Collection Background"
-            fill
-            priority
-            className=" object-center object-cover w-full h-full  z-0"
-          />
+          <>
+            <Image
+              src={shopNowImage}
+              alt="Latest Collection Background"
+              fill
+              priority
+              className="object-center object-cover w-full h-full z-0 group-hover:scale-105 transition-transform duration-700"
+            />
+            {/* Overlay gradient - does not affect button */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/40 z-10"></div>
+          </>
         )}
 
-        <Link
-          href="/shop"
-          prefetch
-          className="relative z-20 flex items-center gap-2 justify-center h-fit py-2 cursor-pointer text-center text-white md:px-4 px-2 border-2 border-white rounded-md text-sm md:text-2xl"
-        >
-          <ShoppingBag size={25} className="md:text-2xl" /> Shop Now
-        </Link>
+        {/* Shop Now Button - Separate from overlay */}
+        <div className="relative z-20 flex items-center justify-center">
+          <Link
+            href="/shop"
+            prefetch
+            className="group/btn relative flex items-center gap-2 md:gap-3 justify-center 
+               px-6 py-3 md:px-12 md:py-6 
+               text-white font-light tracking-wider text-base md:text-3xl 
+               border-2 border-white rounded-sm 
+               hover:bg-gray-100 hover:text-black hover:border-gray-100 
+               transition-all duration-500 overflow-hidden shadow-lg hover:shadow-2xl"
+          >
+            <ShoppingBag
+              size={20} // smaller icon by default
+              className="md:w-8 md:h-8 group-hover/btn:scale-110 transition-transform duration-300"
+            />
+            <span className="font-light tracking-widest text-sm md:text-3xl">
+              SHOP NOW
+            </span>
+
+            {/* Animated underline on hover */}
+            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-gray-900 to-transparent scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-500"></div>
+          </Link>
+        </div>
+
+        {/* Decorative corner accents */}
+        <div className="absolute top-8 left-8 w-16 h-16 border-t-2 border-l-2 border-white/20 z-15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute bottom-8 right-8 w-16 h-16 border-b-2 border-r-2 border-white/20 z-15 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       </div>
     </div>
   );

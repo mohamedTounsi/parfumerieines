@@ -10,18 +10,9 @@ const EditProductPage = () => {
   const [form, setForm] = useState({
     title: "",
     price: "",
-    colors: "",
-    date: "",
+    ml: "",
+    quantity: "",
     description: "",
-    sizes: "",
-    composition: "",
-    care: "",
-    xsmallQuantity: "",
-    smallQuantity: "",
-    mediumQuantity: "",
-    largeQuantity: "",
-    xlargeQuantity: "",
-    xxlargeQuantity: "",
   });
 
   const [frontImg, setFrontImg] = useState(null);
@@ -38,18 +29,9 @@ const EditProductPage = () => {
         setForm({
           title: data.title || "",
           price: data.price || "",
-          colors: data.colors || "",
-          date: data.date?.slice(0, 10) || "",
+          ml: data.ml || "",
+          quantity: data.quantity || "",
           description: data.description || "",
-          sizes: data.sizes || "",
-          composition: data.composition || "",
-          care: data.care || "",
-          xsmallQuantity: data.xsmallQuantity || "",
-          smallQuantity: data.smallQuantity || "",
-          mediumQuantity: data.mediumQuantity || "",
-          largeQuantity: data.largeQuantity || "",
-          xlargeQuantity: data.xlargeQuantity || "",
-          xxlargeQuantity: data.xxlargeQuantity || "",
         });
 
         setExistingFront(data.frontImg);
@@ -94,7 +76,7 @@ const EditProductPage = () => {
 
       if (res.ok) {
         toast.success("Product updated!", { id: toastId });
-        router.push("/dashbord/products");
+        router.push("/dashboard/products");
       } else {
         const errorData = await res.json();
         toast.error(errorData.message || "Failed to update", { id: toastId });
@@ -107,64 +89,51 @@ const EditProductPage = () => {
 
   return (
     <div className="w-full h-full">
-      <div className="max-w-4xl mx-auto mt-10 p-8 bg-white rounded-2xl shadow-lg">
+      <div className="max-w-2xl mx-auto mt-10 p-8 bg-white rounded-2xl shadow-lg">
         <h1 className="text-4xl font-semibold mb-8 text-center text-gray-800">
           Edit Product
         </h1>
 
         <form
           onSubmit={handleSubmit}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          className="grid grid-cols-1 gap-6"
+          encType="multipart/form-data"
         >
           {[
             ["title", "Title", "text"],
-            ["price", "Price", "text"],
-            ["colors", "Colors", "text"],
-            ["date", "Date", "date"],
-            ["sizes", "Sizes", "text"],
-            ["composition", "Composition", "text"],
-            ["care", "Care Instructions", "text"],
-            ["xsmallQuantity", "XS Quantity", "number"],
-            ["smallQuantity", "S Quantity", "number"],
-            ["mediumQuantity", "M Quantity", "number"],
-            ["largeQuantity", "L Quantity", "number"],
-            ["xlargeQuantity", "XL Quantity", "number"],
-            ["xxlargeQuantity", "XXL Quantity", "number"],
+            ["price", "Price", "number"],
+            ["ml", "Volume (ml)", "number"],
+            ["quantity", "Quantity", "number"],
           ].map(([name, label, type]) => (
             <div key={name} className="flex flex-col">
-              <label
-                htmlFor={name}
-                className="text-sm font-medium text-gray-700 mb-1"
-              >
+              <label className="text-sm font-medium text-gray-700 mb-1">
                 {label}
               </label>
               <input
-                id={name}
                 name={name}
                 type={type}
                 value={form[name]}
                 onChange={handleChange}
-                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-black"
+                required
               />
             </div>
           ))}
 
-          <div className="md:col-span-2 flex flex-col">
-            <label
-              htmlFor="description"
-              className="text-sm font-medium text-gray-700 mb-1"
-            >
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
             <textarea
-              id="description"
               name="description"
               value={form.description}
               onChange={handleChange}
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black min-h-[120px]"
+              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-black min-h-[120px]"
+              required
             />
           </div>
 
+          {/* Front Image */}
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-2">
               Front Image
@@ -173,7 +142,7 @@ const EditProductPage = () => {
               <img
                 src={existingFront}
                 alt="Front"
-                className="w-24 h-24 object-cover rounded mb-2"
+                className="w-32 h-32 object-cover rounded mb-2 border"
               />
             )}
             <input
@@ -185,6 +154,7 @@ const EditProductPage = () => {
             />
           </div>
 
+          {/* Back Image */}
           <div className="flex flex-col">
             <label className="text-sm font-medium text-gray-700 mb-2">
               Back Image
@@ -193,7 +163,7 @@ const EditProductPage = () => {
               <img
                 src={existingBack}
                 alt="Back"
-                className="w-24 h-24 object-cover rounded mb-2"
+                className="w-32 h-32 object-cover rounded mb-2 border"
               />
             )}
             <input
@@ -205,7 +175,7 @@ const EditProductPage = () => {
             />
           </div>
 
-          <div className="md:col-span-2 flex justify-center mt-4">
+          <div className="flex justify-center mt-4">
             <button
               type="submit"
               className="bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800 transition duration-200"

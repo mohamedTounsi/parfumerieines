@@ -13,7 +13,7 @@ const Footer = () => {
         <div className="flex flex-col items-start gap-4">
           <Link href="/">
             <Image
-              src="/beygif.webp"
+              src="/logoines2.png"
               alt="logo"
               width={100}
               height={100}
@@ -95,8 +95,17 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="mt-10 border-t border-gray-700 pt-4 text-sm text-gray-500 text-center">
-        &copy; {new Date().getFullYear()} BEYNBEY. All rights reserved.
+      <div className="mt-10 border-t  border-gray-700 pt-4 text-sm text-gray-500 text-center">
+        <div className="w-[95%] mx-auto  flex items center justify-between">
+          &copy; {new Date().getFullYear()} Parfumerie Ines . All rights
+          reserved.
+          <p>
+            POWERED BY{" "}
+            <a className="underline" href="">
+              MT
+            </a>{" "}
+          </p>
+        </div>
       </div>
     </footer>
   );

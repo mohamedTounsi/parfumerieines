@@ -2,10 +2,9 @@ import { NextResponse } from "next/server";
 import { Readable } from "stream";
 import formidable from "formidable";
 import fs from "fs";
-import path from "path";
-import cloudinary from "cloudinary";
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/product";
+import cloudinary from "cloudinary";
 
 // Cloudinary config
 cloudinary.v2.config({
@@ -37,7 +36,6 @@ export async function POST(req) {
     await connectDB();
 
     const form = formidable({ multiples: true });
-
     const nodeReq = readableFromWebReadable(req.body);
     nodeReq.headers = Object.fromEntries(req.headers);
 
@@ -48,10 +46,8 @@ export async function POST(req) {
       });
     });
 
-    const requiredFields = [
-      "title", "price", "colors", "date", "description", "sizes", "composition", "care",
-      "xsmallQuantity", "smallQuantity", "mediumQuantity", "largeQuantity", "xlargeQuantity", "xxlargeQuantity"
-    ];
+    // Required fields for perfume
+    const requiredFields = ["title", "price", "ml", "description", "quantity"];
 
     for (const field of requiredFields) {
       if (!data.fields[field]) {
@@ -60,17 +56,17 @@ export async function POST(req) {
     }
 
     if (!data.files.frontImg || !data.files.backImg) {
-      return NextResponse.json({ message: "Both images are required" }, { status: 400 });
+      return NextResponse.json({ message: "Both front and back images are required" }, { status: 400 });
     }
 
-    // Upload both images to Cloudinary
+    // Upload images to Cloudinary
     const uploadToCloudinary = async (file) => {
       const result = await cloudinary.v2.uploader.upload(file.filepath, {
-        folder: "productImages",
+        folder: "perfumeImages",
         resource_type: "image",
         quality: "auto:eco",
       });
-      fs.unlinkSync(file.filepath); // clean up temp file
+      fs.unlinkSync(file.filepath); // remove temp file
       return result.secure_url;
     };
 
@@ -80,18 +76,9 @@ export async function POST(req) {
     const product = await Product.create({
       title: data.fields.title[0],
       price: data.fields.price[0],
-      colors: data.fields.colors[0],
-      date: data.fields.date[0],
+      ml: data.fields.ml[0],
       description: data.fields.description[0],
-      sizes: data.fields.sizes[0],
-      composition: data.fields.composition[0],
-      care: data.fields.care[0],
-      xsmallQuantity: data.fields.xsmallQuantity[0],
-      smallQuantity: data.fields.smallQuantity[0],
-      mediumQuantity: data.fields.mediumQuantity[0],
-      largeQuantity: data.fields.largeQuantity[0],
-      xlargeQuantity: data.fields.xlargeQuantity[0],
-      xxlargeQuantity: data.fields.xxlargeQuantity[0],
+      quantity: data.fields.quantity[0],
       frontImg: frontImgUrl,
       backImg: backImgUrl,
     });
