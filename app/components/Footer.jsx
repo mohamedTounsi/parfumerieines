@@ -24,24 +24,16 @@ const Footer = () => {
 
           <div className="flex gap-4 mt-2">
             <a
-              href="https://www.instagram.com/beyandbey/"
+              href="https://www.instagram.com/parfumerieines/"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FaInstagram className="text-xl hover:text-gray-400 transition" />
             </a>
-            <a
-              href="https://www.facebook.com/beyandbey"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="#" target="_blank" rel="noopener noreferrer">
               <FaFacebook className="text-xl hover:text-gray-400 transition" />
             </a>
-            <a
-              href="https://www.tiktok.com/@beyandbey?lang=fr"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="#" target="_blank" rel="noopener noreferrer">
               <FaTiktok className="text-xl hover:text-gray-400 transition" />
             </a>
           </div>
@@ -101,7 +93,10 @@ const Footer = () => {
           reserved.
           <p>
             POWERED BY{" "}
-            <a className="underline" href="">
+            <a
+              className="underline"
+              href="https://portfoliomt-kohl.vercel.app/"
+            >
               MT
             </a>{" "}
           </p>
