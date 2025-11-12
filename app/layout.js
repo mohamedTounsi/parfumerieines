@@ -1,6 +1,5 @@
 import { Geist, Geist_Mono, Assistant } from "next/font/google";
 import "./globals.css";
-import LoadingOverlay from "./components/LoadingOverlay";
 import { CartProvider } from "@/context/CartContext"; // ✅ Import the CartProvider
 import { Toaster } from "react-hot-toast";
 
@@ -32,7 +31,7 @@ export default function RootLayout({ children }) {
       >
         <CartProvider> {/* ✅ Wrap your entire app with CartProvider */}
           <Toaster position="top-center" />
-          <LoadingOverlay />
+
           {children}
         </CartProvider>
       </body>
